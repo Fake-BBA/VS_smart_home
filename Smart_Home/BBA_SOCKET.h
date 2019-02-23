@@ -9,7 +9,7 @@ class BBA_UDP
 public:
 	BBA_UDP();
 	BBA_UDP(char *ipaddress , short PORT );
-	int BBA_UDP_Init(HWND m_hWnd,char *local_address, short local_port, char *remote_address, short remote_port);
+	int BBA_UDP_Init(char *local_address, short local_port, char *remote_address, short remote_port);
 	BBA_UDP(char *local_address, short local_port, char *remote_address, short remote_port);
 	int SetRemote(char* addrTarge,short PORT);	//发送目的
 	int BindLocal(char* addrLocal,short PORT);
@@ -17,11 +17,17 @@ public:
 	int Recvfrom(char *buf);
 	long OnServerMsg(WPARAM wParam, LPARAM lParam);
 	~BBA_UDP();
+
+private:
+	int GetLocalName_IP();
+
 public:
 	SOCKET m_socket;
 	sockaddr_in addrLocal;			//绑定的本地IP
 	sockaddr_in addrTarge;			//发出信息目标
-	sockaddr_in addrRemote;			//发出信息的一方
+	sockaddr_in addrRemote;			//收到信息的一方
+	char localIP[17];	//本机IP
+	char localName[50];	//本机名字
 	int nServerAddrLen = sizeof(sockaddr_in);
 	char recvBuf[512];
 

@@ -3,7 +3,13 @@
 
 BBA_UDP::BBA_UDP()
 {
-
+	WSADATA wsa;
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+	{
+		//printf("WSAStartup failed\n");
+		//return -1;
+	}
+	GetLocalName_IP();
 }
 
 BBA_UDP::BBA_UDP(char ipaddress[8] = "127.0.0.1", short PORT = 1025)
@@ -15,6 +21,7 @@ BBA_UDP::BBA_UDP(char ipaddress[8] = "127.0.0.1", short PORT = 1025)
 		//printf("WSAStartup failed\n");
 		//return -1;
 	}
+	GetLocalName_IP();
 	//建立一个UDP的socket  
 	m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (m_socket == INVALID_SOCKET)
@@ -23,28 +30,7 @@ BBA_UDP::BBA_UDP(char ipaddress[8] = "127.0.0.1", short PORT = 1025)
 		//return -1;
 	}
 	SetRemote(ipaddress, PORT);
-}
 
-int BBA_UDP::BBA_UDP_Init(HWND m_hWnd, char *local_address, short local_port, char *remote_address, short remote_port)
-{
-	//初始化网络环境  
-	WSADATA wsa;
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-	{
-		//printf("WSAStartup failed\n");
-		//return -1;
-	}
-	//建立一个UDP的socket  
-	m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (m_socket == INVALID_SOCKET)
-	{
-		//printf("create socket failed\n");
-		//return -1;
-	}
-	SetRemote(remote_address, remote_port);
-	BindLocal(local_address, local_port);
-	
-	return 1;
 }
 
 BBA_UDP::BBA_UDP(char *local_address, short local_port, char *remote_address, short remote_port)
@@ -56,6 +42,7 @@ BBA_UDP::BBA_UDP(char *local_address, short local_port, char *remote_address, sh
 		//printf("WSAStartup failed\n");
 		//return -1;
 	}
+	GetLocalName_IP();
 	//建立一个UDP的socket  
 	m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (m_socket == INVALID_SOCKET)
@@ -69,8 +56,23 @@ BBA_UDP::BBA_UDP(char *local_address, short local_port, char *remote_address, sh
 
 BBA_UDP::~BBA_UDP()
 {
-
+	WSACleanup();
 }
+
+int BBA_UDP::BBA_UDP_Init(char *local_address, short local_port, char *remote_address, short remote_port)
+{
+	//建立一个UDP的socket  
+	m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (m_socket == INVALID_SOCKET)
+	{
+		//printf("create socket failed\n");
+		//return -1;
+	}
+	SetRemote(remote_address, remote_port);
+	BindLocal(local_address, local_port);
+	return 1;
+}
+
 
 int BBA_UDP::SetRemote(char* ipaddress, short PORT)
 {
@@ -92,13 +94,9 @@ int BBA_UDP::BindLocal(char* ipaddress, short PORT)
 
 int BBA_UDP::Send(char *bytes, unsigned int len)
 {
-	if (0 == sendto(m_socket, bytes, len, 0, (SOCKADDR *)&addrTarge, sizeof(SOCKADDR)))
-	{
-		//printf("send %s failed\n", buf);
-		return -1;
-	}
-	//printf("send msg:%s\n", buf); 
-	return 1;
+	sendto(m_socket, bytes, len, 0, (SOCKADDR *)&addrTarge, sizeof(SOCKADDR));
+	int ret2 = WSAGetLastError();
+	return ret2;
 }
 
 int BBA_UDP::Recvfrom(char *buf)
@@ -110,5 +108,16 @@ int BBA_UDP::Recvfrom(char *buf)
 
 long BBA_UDP::OnServerMsg(WPARAM wParam, LPARAM lParam)
 {
+	return 1;
+}
+
+int BBA_UDP::GetLocalName_IP()
+{
+	gethostname(localName, sizeof(localName));// 获得本机主机名.
+	hostent* hn;
+	hn = gethostbyname(localName);//根据本机主机名得到本机ip
+	CString temp = inet_ntoa(*(in_addr *)hn->h_addr_list[0]);//把ip换成字符串形式
+	strcpy(localIP, temp);
+
 	return 1;
 }

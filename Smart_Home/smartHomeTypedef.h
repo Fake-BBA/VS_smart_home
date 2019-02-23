@@ -4,20 +4,22 @@ typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
 
-enum MessagePacketState {
-	FIRST_BYTE = 0,
-	SENDER,
-	RECEIVER,
-	FUNCTION,
-	DATA
-};
+#define MESSAGE_PACKET_SIZE	100
+//enum MessagePacketState {
+//	FIRST_BYTE = 0,
+//	SENDER,
+//	RECEIVER,
+//	FUNCTION,
+//	DATA
+//};
 enum MessageCtrFunction {
 	HEARTBEAT = 0,
 	FIND_DEVICE,
 	LIGHT,
 	FAN,
 	HUMITURE = 4,
-	WIFI_CONFIG = 254
+	WIFI_CONFIG = 254,
+	DEVICE_ERROS = 255
 };
 
 struct MessagePacketStruct {
