@@ -33,3 +33,11 @@ union MessagePacketUnion {
 	uint8 p_buff[100];	//协议规定最长包数据为100
 };
 
+struct DeviceInfo {
+	uint16 devicesNumber;	//设备号
+	sockaddr_in address;	//对应IP
+	uint8 functionWorld;	//对应功能
+	uint8 isExist;			//是否存在
+	uint8 loosTimes;		//隔了多少个时间单位没有响应
+};
+

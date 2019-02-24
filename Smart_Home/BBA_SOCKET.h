@@ -12,6 +12,7 @@ public:
 	int BBA_UDP_Init(char *local_address, short local_port, char *remote_address, short remote_port);
 	BBA_UDP(char *local_address, short local_port, char *remote_address, short remote_port);
 	int SetRemote(char* addrTarge,short PORT);	//发送目的
+	int SetRemote(sockaddr_in addrTarge, short PORT);	//发送目的
 	int BindLocal(char* addrLocal,short PORT);
 	int Send(char *bytes, unsigned int len);
 	int Recvfrom(char *buf);

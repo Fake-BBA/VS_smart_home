@@ -82,6 +82,16 @@ int BBA_UDP::SetRemote(char* ipaddress, short PORT)
 	addrTarge.sin_addr.S_un.S_addr = inet_addr(ipaddress);
 	return 1;
 }
+
+int BBA_UDP::SetRemote(sockaddr_in addrTarge, short PORT)
+{
+	memset(&this->addrTarge, 0x00, sizeof(this->addrTarge));
+	this->addrTarge.sin_family = AF_INET;
+	this->addrTarge.sin_port = htons(PORT);
+	this->addrTarge.sin_addr.S_un.S_addr = addrTarge.sin_addr.S_un.S_addr;
+	return 1;
+}
+
 int BBA_UDP::BindLocal(char* ipaddress, short PORT)
 {
 	memset(&addrLocal, 0x00, sizeof(addrTarge));
