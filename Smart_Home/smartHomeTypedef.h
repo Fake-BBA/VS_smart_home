@@ -18,6 +18,7 @@ enum MessageCtrFunction {
 	LIGHT,
 	FAN,
 	HUMITURE = 4,
+	WIFI_CONFIG_SET = 253,
 	WIFI_CONFIG = 254,
 	DEVICE_ERROS = 255
 };
